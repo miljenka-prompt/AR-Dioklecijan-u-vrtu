@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="hr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101913">
+  <meta name="description" content="Dioklecijan prije i nakon abdikacije. Autorski WebAR kronovizor Miljenke Ćurković, prema antičkoj anegdoti o carevu vrtu.">
+  <title>Dioklecijan · Od purpura do vrta</title>
+  <link rel="stylesheet" href="./styles.css?v=4">
+  <script type="module" src="./app.js?v=4"></script>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" class="icon-defs" aria-hidden="true"><defs>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m9 5 11 7-11 7Z"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 11a9 9 0 1 1 2 7M3 4v7h7"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 7h4l2-3h4l2 3h4v13H4Z"/><circle cx="12" cy="13" r="4"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M11 4 6 8H3v8h3l5 4ZM16 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24"><path d="M11 4 6 8H3v8h3l5 4Zm5 5 6 6m0-6-6 6"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M9 3H3v6m12-6h6v6M3 15v6h6m12-6v6h-6"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-11v1"/></symbol>
+  </defs></svg>
+
+  <div id="experience">
+    <video id="cameraFeed" playsinline muted autoplay aria-hidden="true" hidden></video>
+    <div id="xrCanvas" aria-hidden="true"></div>
+    <div id="overlay">
+      <header class="topbar">
+        <a class="wordmark" href="./" aria-label="Kronovizor, početak">K<span>R</span>ONOVIZOR<span class="brand-line">DIOKLECIJAN</span></a>
+        <button id="aboutButton" class="quiet" aria-label="Povijesni izvor i o prizoru"><svg><use href="#i-info"/></svg><span>O prizoru</span></button>
+      </header>
+
+      <main id="main">
+        <div class="intro">
+          <p class="eyebrow">JEDAN ČOVJEK. DVA SVIJETA.</p>
+          <h1>Od purpura <em>do vrta.</em></h1>
+          <p class="intro-line">Dioklecijan prije i nakon abdikacije</p>
+          <p class="intro-context">Prema antičkoj anegdoti, Dioklecijan je na poziv da ponovno preuzme vlast odgovorio pričom o povrću koje uzgaja u Saloni. Kronovizor povezuje njegovu carsku ulogu s tim životom nakon abdikacije. Prizori su autorska interpretacija antičkog teksta.</p>
+          <p class="intro-source"><a href="#aboutPanel">Epitome de Caesaribus, 39.5–6</a> · autorska vizualizacija</p>
+        </div>
+
+        <section id="viewer" class="viewer" aria-label="Vremenski prozor">
+          <div id="mediaFrame" class="media-frame">
+            <video id="storyVideo" playsinline webkit-playsinline preload="metadata" poster="./assets/emperor-poster.jpg" aria-label="Dioklecijan kao car, abdikacija i Dioklecijan u vrtu">
+              <source src="./assets/diocletian-paul-lipsync.mp4" type="video/mp4">
+              Vaš preglednik ne može prikazati video. <a href="./assets/diocletian-paul-lipsync.mp4">Otvorite snimku.</a>
+            </video>
+            <div class="frame-top"><span id="sceneLabel">I · CAR</span><span id="viewLabel">VREMENSKI PROZOR</span></div>
+            <button id="bigPlay" class="big-play" aria-label="Pokreni cijelu priču"><svg><use href="#i-play"/></svg><span>Otvori vrijeme</span></button>
+            <div id="loadingIndicator" class="loading" role="status" hidden>Učitavam prizor…</div>
+            <div id="mediaError" class="media-error" hidden><p>Snimka se nije učitala.</p><button id="retryVideo">Pokušaj ponovno</button><a href="./assets/diocletian-paul-lipsync.mp4">Otvori video zasebno</a></div>
+          </div>
+          <div class="playback">
+            <button id="playButton" class="icon-button" aria-label="Pokreni"><svg><use href="#i-play"/></svg></button>
+            <label class="sr-only" for="seek">Položaj u snimci</label><input type="range" id="seek" min="0" max="15.958333" value="0" step="0.05" aria-valuetext="Početak">
+            <span id="time" class="time">0:00 / 0:15</span>
+            <button id="soundButton" class="icon-button" aria-label="Isključi glas" aria-pressed="true" title="Latinski glas"><svg><use href="#i-sound"/></svg></button>
+            <button id="fullscreenButton" class="icon-button" aria-label="Proširi prizor"><svg><use href="#i-expand"/></svg></button>
+          </div>
+          <div class="view-tools"><button id="closeupButton" class="secondary" aria-pressed="false"><svg><use href="#i-expand"/></svg><span>Krupni plan govora</span></button></div>
+        </section>
+
+        <nav class="chapters" aria-label="Dijelovi priče">
+          <button data-time="0" class="chapter active" aria-current="step"><span class="chapter-number">I</span><span>Car<small>Prije abdikacije</small></span></button>
+          <button data-time="3.1" class="chapter"><span class="chapter-number">II</span><span>Abdicatio<small>Odricanje od vlasti</small></span></button>
+          <button data-time="5.25" class="chapter"><span class="chapter-number">III</span><span>Vrt<small>Život nakon vlasti</small></span></button>
+        </nav>
+
+        <section class="interpretation" aria-label="Priča i prijevod">
+          <div class="reading-toolbar"><span id="readingLabel">PRIJE ABDIKACIJE</span><div class="language" role="group" aria-label="Jezik povijesnog citata"><button id="langHr" aria-pressed="true">HR</button><button id="langLa" aria-pressed="false">LAT</button></div></div>
+          <p id="reading" class="reading">Purpur, straža i ceremonija. Kronovizor najprije otvara prizor Dioklecijana u carskoj ulozi.</p>
+          <p id="readingNote" class="reading-note">Pokrenite cijelu priču ili odaberite prizor.</p>
+        </section>
+
+        <div class="actions">
+          <button id="enterAR" class="primary"><svg><use href="#i-camera"/></svg><span>Otvori kameru</span></button>
+          <button id="enterXR" class="secondary" hidden><svg><use href="#i-expand"/></svg><span>Postavi u prostoru</span></button>
+          <button id="replay" class="secondary"><svg><use href="#i-reset"/></svg><span>Cijela priča</span></button>
+        </div>
+        <p id="supportHint" class="support-hint">Kameru uključujete tek dodirom tipke. Prozor preko kamere možete pomicati i povećavati.</p>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+        <div id="cameraHelp" class="camera-help" hidden>
+          <p id="cameraHelpText">Ako ste demo otvorili unutar aplikacije, otvorite istu poveznicu u Chromeu ili Safariju i dopustite kameru.</p>
+          <div><a id="openBrowser" href="./" target="_blank" rel="noopener">Otvori zasebno ↗</a><button id="copyLink" class="secondary">Kopiraj poveznicu</button></div>
+          <input id="manualLink" type="url" readonly aria-label="Poveznica za otvaranje u pregledniku" hidden>
+        </div>
+  <section id="aboutPanel" class="about-panel" aria-labelledby="aboutTitle">
+    <div class="dialog-heading"><p class="eyebrow">IZA VREMENSKOG PROZORA</p></div>
+    <h2 id="aboutTitle">Što nam govori izvor?</h2>
+    <p>U djelu <em>Epitome de Caesaribus</em> nepoznatog autora (39.5–6) Dioklecijan se povlači s vlasti. Kada ga Maksimijan i Galerije pozovu da ponovno preuzme carstvo, odgovara anegdotom o povrću koje je vlastitim rukama uzgojio u Saloni.</p>
+    <blockquote lang="la">Utinam Salonae possetis visere olera nostris manibus instituta, profecto numquam istud temptandum iudicaretis.</blockquote>
+    <p>„Kad biste samo mogli vidjeti povrće koje smo vlastitim rukama uzgojili u Saloni, zacijelo nikad ne biste pomislili da bi trebalo pokušati ponovno preuzeti vlast.”</p>
+    <p class="detail-note">Smisaoni prijevod za ovaj demo. Latinski <em>olera</em> označava povrće; „kupus” je uobičajeno, uže tumačenje.</p>
+    <h3>Prizor je interpretacija</h3>
+    <p>Carska dvorana, vrt, odjeća, geste i susret s gledateljem autorska su vizualizacija. Video ne dokazuje izgled određenog vrta ni mjesto i okolnosti izgovaranja rečenice. Citat prenosi antički autor; nije sačuvan zapis Dioklecijanova glasa.</p>
+    <div class="sources"><a href="https://www.thelatinlibrary.com/victor/victor.caes2.html" target="_blank" rel="noopener noreferrer">Antički tekst · Epitome 39.5–6 ↗</a></div>
+    <p class="detail-note">Koncept i video: Miljenka Ćurković. Neovisni demonstracijski projekt.</p>
+  </section>
+      </main>
+
+      <div id="arHUD" class="ar-hud" hidden>
+        <div class="ar-top"><div><span class="eyebrow">KRONOVIZOR</span><p id="arModeLabel">Prozor u prošlost</p></div><button id="exitAR" class="icon-button ar-close" aria-label="Zatvori prikaz kamerom"><svg><use href="#i-close"/></svg></button></div>
+        <div id="arPrompt" class="ar-prompt" role="status">Usmjerite kameru prema podu i polako pomaknite mobitel.</div>
+        <div class="ar-bottom">
+          <p id="arQuote" class="ar-quote"></p>
+          <p id="cameraModeHint" class="camera-mode-hint" hidden>Prozor prati zaslon. Pomaknite ga prstom; povećajte s dva prsta.</p>
+          <div class="ar-controls">
+            <button id="arPlay" class="icon-button" aria-label="Pauziraj priču"><svg><use href="#i-pause"/></svg></button>
+            <button id="arReplay" class="icon-button" aria-label="Ponovi cijelu priču"><svg><use href="#i-reset"/></svg></button>
+            <button id="arSound" class="icon-button" aria-label="Isključi glas" aria-pressed="true"><svg><use href="#i-sound"/></svg></button>
+            <button id="placeButton" class="primary" disabled>Tražim pod…</button>
+          </div>
+          <button id="arCloseup" class="ar-closeup" aria-pressed="false">Krupni plan govora</button>
+          <label id="scaleControl" class="scale-control" hidden>Veličina prozora<input id="portalScale" type="range" min="0.5" max="1.8" step="0.05" value="1"></label>
+        </div>
+      </div>
+
+      <footer><span>Autorski demo · Miljenka Ćurković</span><span>Povijesna interpretacija</span></footer>
+    </div>
+  </div>
+
+
+  <noscript><p>Za kronovizor uključite JavaScript. <a href="./assets/diocletian-paul-lipsync.mp4">Ovdje možete pogledati cijeli video.</a></p></noscript>
+</body>
+</html>
