@@ -8,6 +8,15 @@
   <title>Dioklecijan · Od purpura do vrta</title>
   <link rel="stylesheet" href="./styles.css?v=4">
   <script type="module" src="./app.js?v=4"></script>
+  <style>
+    .portfolio-controls{display:flex;align-items:center;gap:8px;margin-left:auto}
+    .portfolio-switch{display:flex;padding:3px;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(10,16,12,.72)}
+    .portfolio-switch button{min-height:34px;padding:0 10px;border:0;border-radius:999px;background:transparent;color:inherit;opacity:.7;font:inherit;font-size:.7rem;font-weight:750;cursor:pointer;white-space:nowrap}
+    .portfolio-switch button.is-active{background:#ece5d5;color:#121713;opacity:1}
+    body.visitor-mode .intro-context,body.visitor-mode .intro-source,body.visitor-mode #readingNote,body.visitor-mode #aboutPanel,body.visitor-mode #aboutButton{display:none!important}
+    body.visitor-mode .interpretation{padding-bottom:.5rem}
+    @media(max-width:760px){.topbar{flex-wrap:wrap}.portfolio-controls{width:100%;justify-content:flex-end;order:3}.portfolio-switch button{padding:0 8px;font-size:.66rem}}
+  </style>
 </head>
 <body>
   <svg xmlns="http://www.w3.org/2000/svg" class="icon-defs" aria-hidden="true"><defs>
@@ -28,6 +37,10 @@
     <div id="overlay">
       <header class="topbar">
         <a class="wordmark" href="./" aria-label="Kronovizor, početak">K<span>R</span>ONOVIZOR<span class="brand-line">DIOKLECIJAN</span></a>
+        <div class="portfolio-controls">
+          <div class="portfolio-switch" role="group" aria-label="Language"><button id="siteHr" class="is-active" type="button">HR</button><button id="siteEn" type="button">EN</button></div>
+          <div class="portfolio-switch" role="group" id="displayMode" aria-label="Razina prikaza"><button id="modeScientific" class="is-active" type="button">Znanstvena</button><button id="modeVisitor" type="button">Za posjetitelje</button></div>
+        </div>
         <button id="aboutButton" class="quiet" aria-label="Povijesni izvor i o prizoru"><svg><use href="#i-info"/></svg><span>O prizoru</span></button>
       </header>
 
@@ -121,5 +134,47 @@
   </div>
 
   <noscript><p>Za kronovizor uključite JavaScript. <a href="./assets/diocletian-paul-lipsync.mp4?v=20260910-clean">Ovdje možete pogledati cijeli video.</a></p></noscript>
+  <script>
+    setTimeout(() => {
+      const video = document.querySelector('#storyVideo');
+      const $ = (s) => document.querySelector(s);
+      let siteLanguage = localStorage.getItem('diocletian-site-language') === 'en' ? 'en' : 'hr';
+      let displayMode = localStorage.getItem('diocletian-display-mode') === 'visitor' ? 'visitor' : 'scientific';
+      const copy = {
+        hr:{eyebrow:'JEDAN ČOVJEK. DVA SVIJETA.',title:'Od purpura <em>do vrta.</em>',line:'Dioklecijan prije i nakon abdikacije',context:'Prema antičkoj anegdoti, Dioklecijan je na poziv da ponovno preuzme vlast odgovorio pričom o povrću koje uzgaja u Saloni. Kronovizor povezuje njegovu carsku ulogu s tim životom nakon abdikacije. Prizori su autorska interpretacija antičkog teksta.',about:'O prizoru',view:'VREMENSKI PROZOR',open:'Otvori vrijeme',camera:'Otvori kameru',space:'Postavi u prostoru',replay:'Cijela priča',closeup:'Krupni plan govora',modeSci:'Znanstvena',modeVisitor:'Za posjetitelje',chapters:[['Car','Prije abdikacije'],['Abdicatio','Odricanje od vlasti'],['Vrt','Život nakon vlasti']],scenes:[['I · CAR','PRIJE ABDIKACIJE','Purpur, straža i ceremonija. Kronovizor najprije otvara prizor Dioklecijana u carskoj ulozi.','Pokrenite cijelu priču ili odaberite prizor.'],['II · ABDICATIO','ODRICANJE OD VLASTI','Car ostavlja vlast. Iza purpura ostaje čovjek — a priča se seli u vrt.','Prijelaz povezuje dva dijela izvornog videa.'],['III · VRT','SMISAO POVIJESNOG CITATA','„Kad biste samo mogli vidjeti povrće koje smo vlastitim rukama uzgojili u Saloni, zacijelo nikad ne biste pomislili da bi trebalo pokušati ponovno preuzeti vlast.”','Epitome de Caesaribus 39.6 · smisaoni prijevod cijelog citata.']]},
+        en:{eyebrow:'ONE MAN. TWO WORLDS.',title:'From purple <em>to the garden.</em>',line:'Diocletian before and after abdication',context:'According to an ancient anecdote, when asked to take power again Diocletian replied by pointing to the vegetables he cultivated at Salona. The Chronovisor connects his imperial role with life after abdication. The scenes are an authorial interpretation of the ancient text.',about:'About the scene',view:'TIME WINDOW',open:'Open time',camera:'Open camera',space:'Place in space',replay:'Full story',closeup:'Speech close-up',modeSci:'Scientific',modeVisitor:'For visitors',chapters:[['Emperor','Before abdication'],['Abdicatio','Renouncing power'],['Garden','Life after power']],scenes:[['I · EMPEROR','BEFORE ABDICATION','Purple, guards and ceremony. The Chronovisor first opens on Diocletian in his imperial role.','Play the full story or choose a scene.'],['II · ABDICATIO','RENOUNCING POWER','The emperor leaves power behind. Beyond the purple remains a man — and the story moves to the garden.','The transition connects the two parts of the source video.'],['III · GARDEN','MEANING OF THE HISTORICAL QUOTE','“If only you could see at Salona the vegetables planted by our own hands, you would certainly never think that taking power again should be attempted.”','Epitome de Caesaribus 39.6 · interpretive translation of the complete quotation.']]}
+      };
+      function sceneIndex(){return video.currentTime < 2.96 ? 0 : video.currentTime < 5.17 ? 1 : 2;}
+      function applyLanguage(){
+        const c=copy[siteLanguage]; document.documentElement.lang=siteLanguage;
+        $('#siteHr').classList.toggle('is-active',siteLanguage==='hr'); $('#siteEn').classList.toggle('is-active',siteLanguage==='en');
+        $('.intro .eyebrow').textContent=c.eyebrow; $('.intro h1').innerHTML=c.title; $('.intro-line').textContent=c.line; $('.intro-context').textContent=c.context;
+        $('#aboutButton span').textContent=c.about; $('#viewLabel').textContent=c.view; $('#bigPlay span').textContent=c.open;
+        $('#enterAR span').textContent=c.camera; $('#enterXR span').textContent=c.space; $('#replay span').textContent=c.replay; $('#closeupButton span').textContent=c.closeup;
+        $('#modeScientific').textContent=c.modeSci; $('#modeVisitor').textContent=c.modeVisitor;
+        document.querySelectorAll('.chapter').forEach((button,i)=>{const span=button.querySelectorAll('span')[1];span.childNodes[0].nodeValue=c.chapters[i][0];span.querySelector('small').textContent=c.chapters[i][1];});
+        $('#langHr').textContent=siteLanguage==='en'?'EN':'HR';
+        applyScene();
+      }
+      function applyScene(){
+        const c=copy[siteLanguage],i=sceneIndex(),s=c.scenes[i];
+        $('#sceneLabel').textContent=s[0]; $('#readingLabel').textContent=s[1];
+        if($('#langLa').getAttribute('aria-pressed')!=='true') $('#reading').textContent=s[2];
+        $('#readingNote').textContent=s[3];
+      }
+      function applyMode(){
+        const visitor=displayMode==='visitor'; document.body.classList.toggle('visitor-mode',visitor);
+        $('#modeScientific').classList.toggle('is-active',!visitor); $('#modeVisitor').classList.toggle('is-active',visitor);
+        $('#modeScientific').setAttribute('aria-pressed',String(!visitor)); $('#modeVisitor').setAttribute('aria-pressed',String(visitor));
+      }
+      $('#siteHr').addEventListener('click',()=>{siteLanguage='hr';localStorage.setItem('diocletian-site-language','hr');applyLanguage();});
+      $('#siteEn').addEventListener('click',()=>{siteLanguage='en';localStorage.setItem('diocletian-site-language','en');applyLanguage();});
+      $('#modeScientific').addEventListener('click',()=>{displayMode='scientific';localStorage.setItem('diocletian-display-mode',displayMode);applyMode();});
+      $('#modeVisitor').addEventListener('click',()=>{displayMode='visitor';localStorage.setItem('diocletian-display-mode',displayMode);applyMode();});
+      video.addEventListener('timeupdate',()=>setTimeout(applyScene,0));
+      $('#langHr').addEventListener('click',()=>setTimeout(applyScene,0));
+      applyMode(); applyLanguage();
+    },0);
+  </script>
 </body>
 </html>
