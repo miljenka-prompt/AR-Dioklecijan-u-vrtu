@@ -3,3 +3,6 @@
 .actions{position:fixed;left:10px;right:10px;bottom:max(24px,calc(env(safe-area-inset-bottom) + 18px));z-index:50;background:rgba(8,12,8,.42);padding:7px;border-radius:18px}
 .actions button{display:block;min-height:46px;flex:1 1 30%;font-size:13px;font-weight:650;background:rgba(12,17,12,.92)}
 #anchor{border:2px solid rgba(245,240,223,.88);font-weight:800}
+
+/* v4: anchor is an independent control, kept clear of browser chrome. */
+#anchor{position:fixed!important;right:14px!important;top:58vh!important;bottom:auto!important;left:auto!important;z-index:2147483647!important;min-width:148px!important;min-height:52px!important;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;background:rgba(12,17,12,.96)!important;box-shadow:0 4px 18px rgba(0,0,0,.35)}
