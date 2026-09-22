@@ -401,7 +401,7 @@ async function enterMode(mode) {
   }
 }
 $('enterAR').addEventListener('click', () => void enterMode('camera'));
-$('enterXR').addEventListener('click', () => void enterMode('xr'));
+$('enterXR').addEventListener('click', () => { window.location.href = './spatial-v2.html'; });
 const directURL = new URL('.', window.location.href).href;
 $('openBrowser').href = directURL;
 $('copyLink').addEventListener('click', async () => {
