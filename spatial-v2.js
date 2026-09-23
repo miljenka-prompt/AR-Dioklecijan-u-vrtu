@@ -8,15 +8,14 @@ const $=id=>document.getElementById(id)
 function setStatus(s,ms=0){const e=$('status'),c=document.querySelector('.status-card');e.textContent=s;c.style.display='block';if(statusTimer)clearTimeout(statusTimer);if(ms)statusTimer=setTimeout(()=>c.style.display='none',ms)}
 function makeVideo(src=VIDEO_URL){const v=document.createElement('video');v.src=src;v.loop=false;v.muted=true;v.playsInline=true;v.setAttribute('playsinline','');v.preload='auto';v.crossOrigin='anonymous';return v}
 function softShadow(){const c=document.createElement('canvas');c.width=256;c.height=128;const x=c.getContext('2d'),g=x.createRadialGradient(128,64,8,128,64,120);g.addColorStop(0,'rgba(0,0,0,.30)');g.addColorStop(.5,'rgba(0,0,0,.12)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,256,128);return new THREE.CanvasTexture(c)}
-function alphaMaterial(map,alphaMap){return new THREE.ShaderMaterial({uniforms:{map:{value:map},alphaMap:{value:alphaMap}},vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`uniform sampler2D map;uniform sampler2D alphaMap;varying vec2 vUv;void main(){vec4 rgb=texture2D(map,vUv);float a=texture2D(alphaMap,vUv).r;a=smoothstep(.06,.88,a);
-float headZone=1.0;
-if(vUv.y>.70){
-  float cx=.535;
-  float halfW=mix(.125,.075,clamp((vUv.y-.70)/.24,0.,1.));
-  headZone=1.-smoothstep(halfW,halfW+.025,abs(vUv.x-cx));
+function alphaMaterial(map,alphaMap){return new THREE.ShaderMaterial({uniforms:{map:{value:map},alphaMap:{value:alphaMap}},vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,fragmentShader:`uniform sampler2D map;uniform sampler2D alphaMap;varying vec2 vUv;void main(){vec4 rgb=texture2D(map,vUv);float a=texture2D(alphaMap,vUv).r;a=smoothstep(.07,.86,a);
+if(vUv.y>.66){
+  float greenSpill=smoothstep(.035,.14,rgb.g-max(rgb.r,rgb.b));
+  float cyanSpill=smoothstep(.055,.18,min(rgb.g,rgb.b)-rgb.r);
+  float spill=max(greenSpill,cyanSpill);
+  a*=1.-spill;
 }
-a*=headZone;
-if(a<.025)discard;gl_FragColor=vec4(rgb.rgb,a);}`,transparent:true,side:THREE.DoubleSide,depthWrite:false,toneMapped:false})}
+if(a<.035)discard;gl_FragColor=vec4(rgb.rgb,a);}`,transparent:true,side:THREE.DoubleSide,depthWrite:false,toneMapped:false})}
 async function play(){if(!video||!maskVideo)return;const t=(video.currentTime<GARDEN_START||video.currentTime>15.8)?GARDEN_START:video.currentTime;video.currentTime=t;maskVideo.currentTime=t;await Promise.all([video.play(),maskVideo.play()])}
 function build(scene){video=makeVideo();maskVideo=makeVideo(MASK_URL);const tex=new THREE.VideoTexture(video);tex.colorSpace=THREE.SRGBColorSpace;tex.minFilter=THREE.LinearFilter;tex.magFilter=THREE.LinearFilter;tex.generateMipmaps=false;const alphaTex=new THREE.VideoTexture(maskVideo);alphaTex.minFilter=THREE.LinearFilter;alphaTex.magFilter=THREE.LinearFilter;alphaTex.generateMipmaps=false;const h=3.25;figure=new THREE.Mesh(new THREE.PlaneGeometry(5.78,h),alphaMaterial(tex,alphaTex));figure.position.set(0,h/2-.78,-2.2);figure.renderOrder=2;scene.add(figure);shadow=new THREE.Mesh(new THREE.PlaneGeometry(1.22,.46),new THREE.MeshBasicMaterial({map:softShadow(),transparent:true,depthWrite:false,toneMapped:false}));shadow.rotation.x=-Math.PI/2;shadow.position.set(-.08,.008,-2.18);scene.add(shadow);video.addEventListener('loadedmetadata',()=>{video.currentTime=GARDEN_START;maskVideo.currentTime=GARDEN_START;setStatus('Pomakni se oko prizora. Ovo je PoC izdvajanja vrtnog prizora.',5200);play().then(()=>{$('video-toggle').textContent='Pauziraj prizor'}).catch(()=>setStatus('Dodirni “Pokreni prizor”.',4200))});video.addEventListener('timeupdate',()=>{if(Math.abs(maskVideo.currentTime-video.currentTime)>.08)maskVideo.currentTime=video.currentTime;if(video.currentTime>=15.82){video.currentTime=GARDEN_START;maskVideo.currentTime=GARDEN_START;if(!video.paused)Promise.all([video.play(),maskVideo.play()]).catch(()=>{})}});video.addEventListener('error',()=>setStatus('Video se nije učitao. Osvježi stranicu i pokušaj ponovno.'))}
 const mod=()=>({name:'diocletian-garden-spatial-poc',onStart:({canvas})=>{const {scene,camera}=XR8.Threejs.xrScene();xrCamera=camera;build(scene);camera.position.set(0,1.6,2.5);XR8.XrController.updateCameraProjectionMatrix({origin:camera.position,facing:camera.quaternion});canvas.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});setStatus('Uspostavljam prostorni prikaz…')},onUpdate:()=>{}})
