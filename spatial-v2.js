@@ -1,6 +1,6 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.183.2/build/three.module.js'
 window.THREE=THREE
-const PACKED_URL='./assets/diocletian-packed-alpha.mp4'
+const PACKED_URL='./assets/diocletian-packed-alpha-temporal-h264.mp4?v=20260923'
 const GARDEN_START=5.75
 let video,figure,shadow,xrCamera,statusTimer,anchored=true
 const $=id=>document.getElementById(id)
