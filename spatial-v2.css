@@ -6,3 +6,7 @@
 
 /* v4: anchor is an independent control, kept clear of browser chrome. */
 #anchor{position:fixed!important;right:14px!important;top:58vh!important;bottom:auto!important;left:auto!important;z-index:2147483647!important;min-width:148px!important;min-height:52px!important;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;background:rgba(12,17,12,.96)!important;box-shadow:0 4px 18px rgba(0,0,0,.35)}
+
+/* Keep the speech control above the camera renderer and mobile browser chrome. */
+#hud{z-index:2147483646}
+#sound-toggle{position:fixed!important;top:max(76px,calc(env(safe-area-inset-top) + 64px))!important;right:14px!important;bottom:auto!important;left:auto!important;z-index:2147483647!important;min-width:132px;min-height:52px;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;background:rgba(12,17,12,.96)!important;box-shadow:0 4px 18px rgba(0,0,0,.45)}
